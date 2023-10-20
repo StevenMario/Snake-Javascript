@@ -1,79 +1,80 @@
-const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext('2d'); 
-let box = 20;
+const canvas = document.querySelector("canvas"); // Sélectionne le canvas dans le HTML
+const ctx = canvas.getContext('2d'); // Obtient le contexte de rendu 2D pour le canvas
+let box = 20; // La taille d'une unité de la grille du jeu
 let snake = [];
-snake[0] = {x: 10*box, y:10*box};
-let food ={
-    x:Math.floor(Math.random()*15 +1)*box,
-    y:Math.floor(Math.random()*15 +1)*box
+snake[0] = { x: 10 * box, y: 10 * box }; // Position initiale de la tête du serpent
+let food = {
+    x: Math.floor(Math.random() * 15 + 1) * box, // Position initiale de la nourriture (aléatoire)
+    y: Math.floor(Math.random() * 15 + 1) * box
 };
 
-let score = 0;
-let d;
-document.addEventListener("keydown",direction);
-function direction(event){
+let score = 0; // Score initial
+let d; // Direction du serpent (LEFT, UP, RIGHT, DOWN)
+
+document.addEventListener("keydown", direction); // Écoute les événements de touche
+
+function direction(event) {
     let key = event.keyCode;
-    if(key == 37 &&  d != "RIGHT"){
-        d="LEFT";
-    }else if(key == 38 && d != "DOWN"){
-        d="up";
-    }else if(key == 37 && d != "LEFT"){
-        d="RIGHT";
-    }else if(key == 37 && d != "UP"){
-        d="DOWN";
+    if (key == 37 && d != "RIGHT") {
+        d = "LEFT";
+    } else if (key == 38 && d != "DOWN") {
+        d = "UP";
+    } else if (key == 39 && d != "LEFT") {
+        d = "RIGHT";
+    } else if (key == 40 && d != "UP") {
+        d = "DOWN";
     }
 }
-function draw(){
-    ctx.clearRect(0,0,400,400);
-    for(let i = 0;i<snake.length;i++){
-        ctx.fillStyle=(i==0)?"green":"white";
-        ctx.fillRect(snake[i].x,snake[i].y,box,box);
-        ctx.strokeStyle="red";
-        ctx.strokeRect(snake[i].x,snake[i].y,box,box);
+
+function draw() {
+    ctx.clearRect(0, 0, 400, 400); // Efface le canvas à chaque mise à jour
+    for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = (i == 0) ? "green" : "white"; // Couleur de la tête en vert, du corps en blanc
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "red";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
     }
-    ctx.fillStyle ="orange";
-    ctx.fillRect(food.x,food.y,box,box);
+    ctx.fillStyle = "orange";
+    ctx.fillRect(food.x, food.y, box, box); // Dessine la nourriture
 
-    let snakeX=snake[0].x;
-    let snakeY=snake[0].y;
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
 
-    if(d=="LEFT") snakeX-=box;
-    if(d=="UP") snakeX-=box;
-    if(d=="RIGHT") snakeX+=box;
-    if(d=="DOWN") snakeX+=box;
+    if (d == "LEFT") snakeX -= box;
+    if (d == "UP") snakeY -= box;
+    if (d == "RIGHT") snakeX += box;
+    if (d == "DOWN") snakeY += box;
 
-    if(snakeX == food.x && snakeY == food.y){
+    if (snakeX == food.x && snakeY == food.y) { // Vérifie si le serpent mange la nourriture
         score++;
-        food={
-            x:Math.floor(Math.random()*15 +1)*box,
-            y:Math.floor(Math.random()*15 +1)*box
+        food = {
+            x: Math.floor(Math.random() * 15 + 1) * box, // Génère une nouvelle position pour la nourriture
+            y: Math.floor(Math.random() * 15 + 1) * box
         }
-    } else{
-        snake.pop();
+    } else {
+        snake.pop(); // Si le serpent ne mange pas, supprime la dernière partie du corps
     }
-    let newHead ={
+    let newHead = {
         x: snakeX,
         y: snakeY
-       };
-       
-       if(snakeX < 0 || snakeY < 0 || snakeX > 19*box ||snakeY> 19*box || collision(newHead,snake)){
-           clearInterval(game);
-       }
-       snake.unshift(newHead);
-       ctx.fillstyle = "red";
-       ctx.font="30px Arial";
-       ctx.fillText(score,2*box,1.6*box);
+    };
+
+    if (snakeX < 0 || snakeY < 0 || snakeX > 19 * box || snakeY > 19 * box || collision(newHead, snake)) {
+        clearInterval(game); // Arrête le jeu en cas de collision avec le mur ou soi-même
+    }
+    snake.unshift(newHead); // Ajoute la nouvelle tête du serpent
+    ctx.fillStyle = "red";
+    ctx.font = "30px Arial";
+    ctx.fillText(score, 2 * box, 1.6 * box); // Affiche le score
 }
-function collision(head,array){
-    for (let j=0 ;j<array.length;j++){
-        if(head.x == array[j].x && head.y == array[j].y){
-            return true;
+
+function collision(head, array) {
+    for (let j = 0; j < array.length; j++) {
+        if (head.x == array[j].x && head.y == array[j].y) {
+            return true; // Vérifie s'il y a une collision entre la tête et le corps du serpent
         }
     }
     return false;
 }
-let game = setinterval(draw,100);
 
-
-
-
+let game = setInterval(draw, 100); // Démarre la boucle de jeu (rafraîchit le canvas toutes les 100 ms)
