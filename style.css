@@ -1,3 +1,38 @@
+#game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 100% de la hauteur de la vue */
+}
+#start-button {
+    background-color: blue;
+}
 canvas{
     border: 2px solid;
+    background: linear-gradient(45deg, #6be6ff, #1e34d7, #6bb0ff);
+    animation: gradientAnimation 5s linear infinite;
+    position: absolute;   
+}
+body {
+    background: linear-gradient(45deg, #ff6b6b, #1ed760, #6b7aff);
+    background-size: 200% 200%;
+    animation: gradientAnimation 5s linear infinite;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+
+#start-button {
+    position: absolute;
+    top: 50%; /* Centre verticalement */
+    left: 50%; /* Centre horizontalement */
+    transform: translate(-50%, -50%); /* Centre exact du canvas */
+    z-index: 1; /* Au-dessus du canvas */
+    /* Styles pour le bouton "Start" */
 }
